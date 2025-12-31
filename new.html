@@ -1,0 +1,461 @@
+<think>
+First, the user wants a web page for Happy New Year with multiple pages:
+
+
+## Planning web page content  
+- The user requested a multi-page web design for a Happy New Year message.
+</think>```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy New Year 💖</title>
+  <meta name="description" content="A cheerful Happy New Year card with multiple pages for Shreya." />
+  <style>
+    :root{
+      --bg1: #ffd6e8;
+      --bg2: #ffb6d5;
+      --card-bg: rgba(255,255,255,0.35);
+      --accent: #ff4f9a;
+      --accent-2: #d63384;
+      --text: #8b2c5c;
+      --heart: #ff5fa2;
+      --shadow: rgba(255,105,180,0.4);
+      --card-radius: 24px;
+    }
+
+    /* Reset & layout */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      overflow:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Intro screen */
+    .intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      z-index: 10;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .intro.hidden {
+      opacity: 0;
+      transform: scale(0.9);
+      pointer-events: none;
+    }
+
+    .intro-content {
+      text-align: center;
+      color: var(--accent);
+      position: relative;
+      z-index: 11;
+    }
+
+    .intro-message {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 700;
+      margin-bottom: 20px;
+      animation: fadeInUp 2s ease-out, pulse 2s infinite 2s;
+    }
+
+    .enter-btn {
+      padding: 12px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      animation: fadeInUp 2s ease-out 1s both, bounce 1s infinite 3s;
+    }
+
+    .enter-btn:hover {
+      background: var(--accent-2);
+      transform: scale(1.05);
+    }
+
+    /* Background SHREYA animation */
+    .background-shreya {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(5rem, 20vw, 15rem);
+      color: rgba(255, 79, 154, 0.1);
+      font-weight: 900;
+      z-index: 8;
+      animation: fadeInShreya 3s ease-out;
+      pointer-events: none;
+    }
+
+    /* Floating stars on intro */
+    .floating-stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .star {
+      position: absolute;
+      font-size: 2rem;
+      animation: floatStar 6s linear infinite;
+      opacity: 0.7;
+    }
+
+    .star:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .star:nth-child(2) { left: 30%; animation-delay: 1s; }
+    .star:nth-child(3) { left: 50%; animation-delay: 2s; }
+    .star:nth-child(4) { left: 70%; animation-delay: 3s; }
+    .star:nth-child(5) { left: 90%; animation-delay: 4s; }
+
+    /* Intro hearts */
+    .intro-hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9;
+    }
+
+    .intro-heart {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: var(--heart);
+      transform: rotate(45deg);
+      opacity: 0.8;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+      animation: floatHeart 8s linear infinite;
+    }
+
+    .intro-heart::before,
+    .intro-heart::after {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: var(--heart);
+      border-radius: 50%;
+    }
+
+    .intro-heart::before { top: -12px; left: 0; }
+    .intro-heart::after { left: -12px; top: 0; }
+
+    .intro-heart:nth-child(1) { left: 5%; animation-delay: -1s; }
+    .intro-heart:nth-child(2) { left: 15%; animation-delay: -2s; }
+    .intro-heart:nth-child(3) { left: 25%; animation-delay: -3s; }
+    .intro-heart:nth-child(4) { left: 35%; animation-delay: -4s; }
+    .intro-heart:nth-child(5) { left: 45%; animation-delay: -5s; }
+    .intro-heart:nth-child(6) { left: 55%; animation-delay: -6s; }
+    .intro-heart:nth-child(7) { left: 65%; animation-delay: -7s; }
+    .intro-heart:nth-child(8) { left: 75%; animation-delay: -8s; }
+    .intro-heart:nth-child(9) { left: 85%; animation-delay: -9s; }
+    .intro-heart:nth-child(10) { left: 95%; animation-delay: -10s; }
+
+    /* Card */
+    .card{
+      background:var(--card-bg);
+      padding:32px 48px;
+      border-radius:var(--card-radius);
+      text-align:center;
+      box-shadow:0 10px 30px var(--shadow);
+      z-index:2;
+      backdrop-filter: blur(6px);
+      max-width:720px;
+      width:calc(100% - 48px);
+      transition: all 0.5s ease;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    .card.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    h1{
+      font-size: clamp(28px, 4vw, 48px);
+      color:var(--accent);
+      margin:0 0 8px;
+      line-height:1.05;
+      animation: fadeInUp 1.5s ease-out;
+    }
+
+    h2{
+      font-size: clamp(20px, 3vw, 32px);
+      color:var(--accent-2);
+      margin:8px 0;
+      font-weight:600;
+      animation: fadeInUp 1.5s ease-out 0.5s both;
+    }
+
+    p{
+      color:var(--text);
+      font-size:clamp(14px,2vw,20px);
+      margin:8px 0 0;
+      animation: fadeInUp 1.5s ease-out 1s both;
+    }
+
+    .name{
+      margin-top:18px;
+      font-size:clamp(18px,2.2vw,26px);
+      color:#ff2f92;
+      font-weight:700;
+      animation: fadeInUp 1.5s ease-out 1.5s both;
+    }
+
+    .moments {
+      margin-top: 20px;
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text);
+      line-height: 1.6;
+      animation: typeWriter 3s steps(40, end) 2s both;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid var(--accent);
+    }
+
+    .thank-you {
+      display: none;
+      margin-top: 20px;
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text);
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .thank-you.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sorry {
+      display: none;
+      margin-top: 20px;
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text);
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .sorry.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .next-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      animation: fadeInUp 1.5s ease-out 2.5s both;
+    }
+
+    .next-btn:hover {
+      background: var(--accent-2);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    @keyframes fadeInShreya {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes floatStar {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-10vh) rotate(360deg); }
+    }
+
+    @keyframes floatHeart {
+      0% { transform: translateY(110vh) rotate(45deg) scale(1); opacity: 0.8; }
+      60% { opacity: 0.9; }
+      100% { transform: translateY(-10vh) rotate(45deg) scale(0.9); opacity: 0.5; }
+    }
+
+    @keyframes typeWriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* Floating hearts container (decorative) */
+    .hearts {
+      position:fixed;
+      inset:0;
+      pointer-events:none; /* purely decorative */
+      z-index:1;
+      overflow:hidden;
+    }
+
+    .heart {
+      position:absolute;
+      width:22px;
+      height:22px;
+      background:var(--heart);
+      transform: rotate(45deg);
+      opacity:0.8;
+      filter:drop-shadow(0 6px 12px rgba(0,0,0,0.06));
+      will-change: transform, opacity;
+      --duration: 8s;
+      animation: float var(--duration) linear infinite;
+    }
+    .heart::before,
+    .heart::after{
+      content:"";
+      position:absolute;
+      width:22px;
+      height:22px;
+      background:var(--heart);
+      border-radius:50%;
+    }
+    .heart::before{ top:-11px; left:0; }
+    .heart::after{ left:-11px; top:0; }
+
+    /* Different sizes / speeds */
+    .heart.small{ width:14px; height:14px; }
+    .heart.small::before,.heart.small::after{ width:14px; height:14px; top:-7px; left:0; left:-7px; }
+    .heart.large{ width:30px; height:30px; }
+    .heart.large::before,.heart.large::after{ width:30px; height:30px; top:-15px; left:0; left:-15px; }
+
+    @keyframes float {
+      0% { transform: translateY(110vh) rotate(45deg) scale(1); opacity:0.85; }
+      60% { opacity:0.95; }
+      100% { transform: translateY(-10vh) rotate(45deg) scale(.9); opacity:0.6; }
+    }
+
+    /* Respect user's reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .heart, .intro-heart { animation: none; opacity: 0.7; transform: translateY(0) rotate(45deg); }
+      .intro-message, .enter-btn, .star, .background-shreya { animation: none; opacity: 1; }
+      h1, h2, p, .name, .moments, .thank-you, .sorry, .next-btn { animation: none; opacity: 1; }
+    }
+
+    /* Responsive padding on small screens */
+    @media (max-width:420px){
+      .card{ padding:20px; border-radius:16px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro screen -->
+  <div class="intro" id="intro">
+    <div class="background-shreya">SHREYA</div>
+    <div class="intro-hearts">
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+      <div class="intro-heart"></div>
+    </div>
+    <div class="floating-stars">
+      <div class="star">⭐</div>
+      <div class="star">✨</div>
+      <div class="star">🌟</div>
+      <div class="star">💫</div>
+      <div class="star">⭐</div>
+    </div>
+    <div class="intro-content">
+      <div class="intro-message">Hey, Shreya here something for you my princess</div>
+      <button class="enter-btn" onclick="enterPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Decorative hearts: aria-hidden because they are purely visual -->
+  <div class="hearts" aria-hidden="true">
+    <div class="heart small" style="left:8%; --duration:7s; animation-delay: -1s;"></div>
+    <div class="heart" style="left:22%; --duration:9s; animation-delay: -3s;"></div>
+    <div class="heart large" style="left:40%; --duration:6.5s; animation-delay: -2s;"></div>
+    <div class="heart" style="left:56%; --duration:10s; animation-delay: -5s;"></div>
+    <div class="heart small" style="left:70%; --duration:8.2s; animation-delay: -4s;"></div>
+    <div class="heart" style="left:86%; --duration:7.6s; animation-delay: -6s;"></div>
+  </div>
+
+  <main class="card" id="mainCard" role="main" aria-labelledby="title">
+    <h1 id="title">🎉 Happy New Year 2026 🎉</h1>
+    <h2>💖 With Love & Smiles 💖</h2>
+    <p>May this New Year bring you joy, happiness,<br>success, and lots of love 💕</p>
+    <div class="moments">Cherished moments of 2025 with you: Our laughter-filled adventures, cozy movie nights, surprise celebrations, and the countless ways you brightened my days. Here's to even more magic in 2026! ✨</div>
+    <button class="next-btn" onclick="showThankYou()">Next: Thank You</button>
+    <div class="thank-you" id="thankYou">
+      <h3>🌟 Thank You So Much 🌟</h3>
+      <p>Thank you for being the light in my life, for every smile, every laugh, and every moment we've shared. Your kindness, love, and support mean the world to me. Here's to many more beautiful memories together! 💖✨</p>
+      <button class="next-btn" onclick="showSorry()">Next: Sorry</button>
+    </div>
+    <div class="sorry" id="sorry">
+      <h3>😞 Sorry 😞</h3>
+      <p>I'm sorry for any mistakes or times I let you down. I promise to do better and cherish you more. Forgive me, my princess. 💕</p>
+    </div>
+    <div class="name">✨ FOR SHREYA (Butke) ✨</div>
+  </main>
+
+  <script>
+    function enterPage() {
+      const intro = document.getElementById('intro');
+      const card = document.getElementById('mainCard');
+      intro.classList.add('hidden');
+      setTimeout(() => {
+        card.classList.add('show');
+      }, 1000); // Delay to match transition
+    }
+
+    function showThankYou() {
+      const thankYou = document.getElementById('thankYou');
+     
